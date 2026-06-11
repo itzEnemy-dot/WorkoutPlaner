@@ -58,19 +58,20 @@ public class PlanController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Ziel,IsActive,UserId,User,Exercises")] Plan plan)
+    public async Task<IActionResult> Create([Bind("Name,Ziel,IsActive")] Plan plan)
     {
         var userId = _userManager.GetUserId(User);
-        plan.Id = Guid.NewGuid(); // Generiere eine neue GUID für den Plan
-        //if (plan.UserId != userId)
-        //{
-        //    return Unauthorized();
-        //}
-    
-        _context.Add(plan);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        plan.Id = Guid.NewGuid();
+        plan.UserId = userId;
+        ModelState.Remove("UserId"); // UserId wird vom Server gesetzt, nicht vom Formular
 
+        if (ModelState.IsValid)
+        {
+            _context.Add(plan);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(plan);
     }
 
     // GET: PLANS/Edit/5

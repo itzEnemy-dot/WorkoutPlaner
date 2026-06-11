@@ -113,7 +113,7 @@ public class ExerciseController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(System.Guid? id, [Bind("Id,Name,MuscleGroup,Sets,Reps,PlanId,LogEntries")] Exercise exercise)
+    public async Task<IActionResult> Edit(System.Guid? id, [Bind("Id,Name,MuscleGroup,Sets,Reps,PlanId")] Exercise exercise)
     {
         var userId = _userManager.GetUserId(User);
         if (id != exercise.Id)
@@ -121,25 +121,28 @@ public class ExerciseController : Controller
             return NotFound();
         }
 
-        if (ModelState.IsValid)
+        var ownsplan = await _context.Plans.AnyAsync(p => p.Id == exercise.PlanId && p.UserId == userId); // Überprüfen, ob der Plan, dem die Übung zugeordnet
+        if (!ownsplan) {
+
+            return NotFound("User is not the owner of the selected plan."); // Wenn der Plan nicht dem Benutzer gehört, wird eine NotFound-Antwort zurückgegeben
+
+        try
         {
-            try
+            _context.Update(exercise);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ExerciseExists(exercise.Id))
             {
-                _context.Update(exercise);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!ExerciseExists(exercise.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
-            return RedirectToAction(nameof(Index));
+        }
+        return RedirectToAction(nameof(Index));
         }
         return View(exercise);
     }

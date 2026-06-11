@@ -35,13 +35,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="PlanId" class="control-label"></label>
-                <input asp-for="PlanId" class="form-control" />
+                <input asp-for="PlanId" class="form-control" asp-items="ViewBag.Plans"/> 
                 <span asp-validation-for="PlanId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LogEntries" class="control-label"></label>
-                <input asp-for="LogEntries" class="form-control" />
-                <span asp-validation-for="LogEntries" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
