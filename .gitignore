@@ -1,0 +1,35 @@
+## .NET / ASP.NET Core
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vs/
+*.log
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+
+## NuGet
+*.nupkg
+packages/
+!packages/repositories.config
+.nuget/
+
+## Publish output
+publish/
+PublishProfiles/
+
+## Database files (local dev)
+*.mdf
+*.ldf
+
+## User secrets & appsettings overrides
+appsettings.Development.json
+
+## OS
+Thumbs.db
+.DS_Store
